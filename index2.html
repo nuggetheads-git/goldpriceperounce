@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MR9MZTND4W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-MR9MZTND4W');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gold Price Per Ounce</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8f9fa;
+    }
+  </style>
+</head>
+<body class="text-gray-800">
+  <!-- Header -->
+  <header class="bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <div class="flex items-center">
+          <div class="w-10 h-10 bg-yellow-400/20 rounded-lg flex items-center justify-center">
+            <svg class="h-6 w-6 text-yellow-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 7.756a4.5 4.5 0 1 0 0 8.488M7.5 10.5h5.25m-5.25 3h5.25M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+          </div>
+          <span class="ml-3 text-xl font-semibold text-gray-900">Gold Price Per Ounce</span>
+        </div>
+        <div>
+          <a href="https://www.youtube.com/@NuggetHeads" target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-gray-800 hover:text-gray-600 transition-colors">
+            Learn to Find Gold
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Price Display Section -->
+    <section class="bg-white p-6 rounded-xl shadow-sm text-center mb-8">
+      <h1 class="text-lg font-medium text-gray-500">Current Gold Price</h1>
+      <div class="my-3">
+        <span class="text-6xl font-bold text-gray-900" id="gold-price">$3,324.89</span>
+        <span class="text-xl font-medium text-gray-500">/ oz</span>
+      </div>
+      <div class="flex items-center justify-center space-x-2 text-sm text-gray-400">
+        <span class="text-green-600 flex items-center" id="price-change">
+          <svg class="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 17a.75.75 0 0 1-.75-.75V5.612L6.22 8.64a.75.75 0 1 1-1.06-1.06l4.25-4.25a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 1 1-1.06 1.06L10.75 5.612V16.25A.75.75 0 0 1 10 17Z" clip-rule="evenodd" />
+          </svg>
+          +$0.80 (0.02%)
+        </span>
+      </div>
+      <div id="error-message" class="text-red-600 text-sm mt-2 hidden">Failed to fetch gold price. Using last known value.</div>
+    </section>
+
+    <!-- Conversions Section -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+      <div class="bg-white p-5 rounded-xl shadow-sm">
+        <h3 class="text-base font-medium text-gray-500">Price per Gram</h3>
+        <p class="text-3xl font-semibold text-gray-800 mt-2" id="price-gram">$106.89</p>
+      </div>
+      <div class="bg-white p-5 rounded-xl shadow-sm">
+        <h3 class="text-base font-medium text-gray-500">Price per Grain</h3>
+        <p class="text-3xl font-semibold text-gray-800 mt-2" id="price-grain">$6.93</p>
+      </div>
+      <div class="bg-white p-5 rounded-xl shadow-sm">
+        <h3 class="text-base font-medium text-gray-500">Price per Pennyweight</h3>
+        <p class="text-3xl font-semibold text-gray-800 mt-2" id="price-pennyweight">$166.24</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white mt-8 py-6">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-500">
+      <p class="text-sm">© 2025 Gold Price Per Ounce. All Rights Reserved.</p>
+      <p class="text-xs mt-2">Data provided for informational purposes only. Updated every minute via <a href="https://api.gold-api.com" target="_blank" rel="noopener noreferrer">gold-api.com</a>.</p>
+    </div>
+  </footer>
+
+  <script>
+    const OZ_TO_GRAM = 31.1035;
+    const OZ_TO_GRAIN = 480;
+    const OZ_TO_PENNYWEIGHT = 20;
+
+    const API_URLS = {
+      gold: 'https://api.gold-api.com/price/XAU'
+    };
+
+    let lastKnownPrice = 3324.89;
+    let lastKnownChange = 0.80;
+    let lastKnownChangePct = 0.02;
+
+    async function updateGoldPrice() {
+      try {
+        const response = await fetch(API_URLS.gold, {
+          method: 'GET',
+          headers: {
+            'User-Agent': 'Mozilla/5.0',
+            'Accept': 'application/json'
+          },
+          mode: 'cors'
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        let price, change, changePct;
+        if (data.success && data.rates && data.rates.XAU) {
+          price = 1 / data.rates.XAU;
+          change = data.change || lastKnownChange;
+          changePct = data.change_pct || lastKnownChangePct;
+        } else if (data.price) {
+          price = data.price;
+          change = data.change || lastKnownChange;
+          changePct = data.change_pct || lastKnownChangePct;
+        } else {
+          throw new Error('Invalid API response format');
+        }
+
+        lastKnownPrice = price;
+        lastKnownChange = change;
+        lastKnownChangePct = changePct;
+
+        document.getElementById('gold-price').innerText = `$${price.toFixed(2)}`;
+        const priceChangeElement = document.getElementById('price-change');
+        priceChangeElement.innerText = `${change >= 0 ? '+' : '-'}$${Math.abs(change).toFixed(2)} (${Math.abs(changePct).toFixed(2)}%)`;
+        priceChangeElement.className = `text-${change >= 0 ? 'green' : 'red'}-600 flex items-center`;
+
+        document.getElementById('price-gram').innerText = `$${(price / OZ_TO_GRAM).toFixed(2)}`;
+        document.getElementById('price-grain').innerText = `$${(price / OZ_TO_GRAIN).toFixed(2)}`;
+        document.getElementById('price-pennyweight').innerText = `$${(price / OZ_TO_PENNYWEIGHT).toFixed(2)}`;
+
+        document.getElementById('error-message').classList.add('hidden');
+      } catch (error) {
+        console.error('Failed to fetch gold price:', error.message);
+        document.getElementById('gold-price').innerText = `$${lastKnownPrice.toFixed(2)}`;
+        const priceChangeElement = document.getElementById('price-change');
+        priceChangeElement.innerText = `${lastKnownChange >= 0 ? '+' : '-'}$${Math.abs(lastKnownChange).toFixed(2)} (${Math.abs(lastKnownChangePct).toFixed(2)}%)`;
+        priceChangeElement.className = `text-${lastKnownChange >= 0 ? 'green' : 'red'}-600 flex items-center`;
+
+        document.getElementById('price-gram').innerText = `$${(lastKnownPrice / OZ_TO_GRAM).toFixed(2)}`;
+        document.getElementById('price-grain').innerText = `$${(lastKnownPrice / OZ_TO_GRAIN).toFixed(2)}`;
+        document.getElementById('price-pennyweight').innerText = `$${(lastKnownPrice / OZ_TO_PENNYWEIGHT).toFixed(2)}`;
+        document.getElementById('error-message').classList.remove('hidden');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      updateGoldPrice();
+      setInterval(updateGoldPrice, 60000);
+    });
+  </script>
+</body>
+</html>
